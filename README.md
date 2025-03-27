@@ -1,6 +1,6 @@
-### PhD-Portfolio
+# PhD-Portfolio
 
-# The Origin: From *Musical Passion* to *Scientific Insight*
+### The Origin of my Journey: From *Musical Passion* to *Scientific Insight*
 
 # ADD WEBSITE LINK
 
@@ -17,7 +17,7 @@ This was not just a personal experience, but a broader narrative I saw repeated 
 My scientific background transformed these observations into a mission. With a Bachelor's and Master's in Psychological Science, specialising in performance 
 science and motor rehabilitation research, I saw an opportunity to bridge my musical insight with rigorous scientific methodology.
 
-# Portfolio Contents
+### Portfolio Contents
 
 **Research Projects (rename due to web app)**
 1. Simulated EMG Data Analysis Project (R / Python)
