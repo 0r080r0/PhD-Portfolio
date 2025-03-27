@@ -1,6 +1,6 @@
 # PhD-Portfolio
 
-### The Origin of my Journey: From *Musical Passion* to *Scientific Insight*
+### The Origin: *From Musical Passion to Scientific Insight*
 
 # ADD WEBSITE LINK
 
