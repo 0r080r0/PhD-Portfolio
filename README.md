@@ -4,9 +4,7 @@
 
 # ADD WEBSITE LINK
 
-Since the age of 16, music has been more than a hobby — it has been my lifeline. Drumming and singing across stages in Germany, The Netherlands, Sweden, and 
-New Zealand, I have lived music not as a full-time professional, but as a dedicated, high-level performer. Music releases on Spotify, YouTube videos, 
-multiple diverse band experiences, and live concerts have shaped my deep understanding of musicians' physical and emotional landscapes.
+Since the age of 16, music has been more than a hobby — it has been my lifeline. Drumming and singing as a self-taught musician across stages in Germany, The Netherlands, Sweden, and New Zealand, I have lived music not as a full-time professional, but as a dedicated, high-level performer. Music releases on Spotify, YouTube videos, multiple diverse band experiences, and live concerts have shaped my deep understanding of musicians' physical and emotional landscapes.
 
 My professional exposure to the music industry — working in international music marketing at Believe Digital and in professional recording studios like klangBezirk
 — opened my eyes to the often-hidden challenges musicians face. Behind the glamour, I witnessed the physical and mental strain that comes with creating art.
