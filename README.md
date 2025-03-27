@@ -1,6 +1,6 @@
 # PhD-Portfolio
 
-### Creative Expression as a Musician: ADD WEBSITE LINK
+### Creative Expression as a Musician: ADD WEBSITE LINK (omit if I directly link website to PhD Proposal)
 
 ### The Origin: *From Musical Passion to Scientific Insight*
 
