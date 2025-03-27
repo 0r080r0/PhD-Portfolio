@@ -23,8 +23,8 @@ science and motor rehabilitation research, I saw an opportunity to bridge my mus
 3. Prototype of a Drummer’s Posture Correction Web App (NOT RESEARCH???)
 4. A Musician's Health Questionnaire
 
-**Supplementary Materials**
-* Statistical Analysis Examples
+**Supplementary Materials (Academic Coding & Skills)**
+* Statistical Analysis Examples 
 * Python & Data Science Notebooks
 * Machine Learning Demonstrations
 * Data Interface & API Projects
