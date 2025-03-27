@@ -33,6 +33,6 @@ science and motor rehabilitation research, I saw an opportunity to bridge my mus
 To develop evidence-based tools that protect musicians' health, drawing from personal experience and scientific precision.
 
 **Academic & Professional Journey**
-* M.Sc. & B.Sc. Psychological Science
-* Research on mental toughness and music's neurological impacts
-* Comprehensive background in clinical research and data analysis
+* B.Sc. in Psychology (Groningen, NL) - Thesis Topic: The role of mental toughness on the relationship between goal focus and peak performance
+* M.Sc. Psychological Science (Gothenburg, SE) - Thesis Topic: A meta-analysis on the effects of music listening on motor function in neurodegenerative diseases
+* Comprehensive background in statistics and research, working as a Freelance Clinical Research Consultant and Research Analyst
