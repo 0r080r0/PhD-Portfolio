@@ -30,6 +30,7 @@ science and motor rehabilitation research, I saw an opportunity to bridge my mus
 * Data Interface & API Projects
 
 **Research Vision**
+
 To develop evidence-based tools that protect musicians' health, drawing from personal experience and scientific precision.
 
 **Academic & Professional Journey**
