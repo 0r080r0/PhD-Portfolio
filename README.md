@@ -1,8 +1,8 @@
 # PhD-Portfolio
 
-### The Origin: *From Musical Passion to Scientific Insight*
+### Creative Expression: ADD WEBSITE LINK
 
-# ADD WEBSITE LINK
+### The Origin: *From Musical Passion to Scientific Insight*
 
 Since the age of 16, music has been more than a hobby — it has been my lifeline. Drumming and singing as a self-taught musician across stages in Germany, The Netherlands, Sweden, and New Zealand, I have lived music not as a full-time professional, but as a dedicated, high-level performer. Music releases on Spotify, YouTube videos, multiple diverse band experiences, and live concerts have shaped my deep understanding of musicians' physical and emotional landscapes.
 
