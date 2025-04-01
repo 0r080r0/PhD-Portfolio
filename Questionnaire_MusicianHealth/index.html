@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musician's Health Questionnaire</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Start Page -->
+    <div id="start-page" class="start-page">
+        <div class="container">
+            <h1>Musician's Health Questionnaire</h1>
+            <p class="intro">Click "Start" to answer a few questions about your physical and mental health to receive curated tips for improvement.</p>
+            <button id="start-button" onclick="startQuiz()">Start</button>
+        </div>
+    </div>
+
+    <!-- Questionnaire Page -->
+    <div id="questionnaire" class="questionnaire" style="display: none;">
+        <div class="container">
+            <form id="health-form">
+                <!-- Questions will be dynamically inserted here -->
+            </form>
+            <div class="button-container">
+                <button id="prev-button" onclick="changeQuestion(-1)" style="display: none;">Previous</button>
+                <button id="next-button" onclick="changeQuestion(1)">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tips Dashboard Page -->
+    <div id="tips-dashboard" class="tips-dashboard" style="display: none;">
+        <div class="container">
+            <h2>Your Curated Health Tips</h2>
+            <div class="category-boxes">
+                <div class="category-box" onclick="showCategoryTips('Physical Health')">
+                    <h3>Physical Health</h3>
+                </div>
+                <div class="category-box" onclick="showCategoryTips('Mental Health')">
+                    <h3>Mental Health</h3>
+                </div>
+                <div class="category-box" onclick="showCategoryTips('Overall Well-being')">
+                    <h3>Overall Well-being</h3>
+                </div>
+            </div>
+
+            <div id="tips-container">
+                <!-- Tips will be dynamically inserted here after category click -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Thank You Page -->
+    <div id="end-page" class="end-page" style="display: none;">
+        <div class="container">
+            <h2>Thank You for Participating!</h2>
+            <p>Your answers have been recorded. We hope the tips you received help you maintain good health and well-being.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
