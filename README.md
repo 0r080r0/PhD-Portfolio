@@ -1,5 +1,7 @@
 # PhD-Portfolio
 
+Personal Website - Music Journey: https://0r080r0-musicians-health.netlify.app/
+
 ### The Origin: *From Musical Passion to Scientific Insight*
 
 Since the age of 16, music has been more than a hobby — it has been a constant driving force in my life. Drumming and singing as a self-taught musician across stages in Germany, The Netherlands, Sweden, and New Zealand, I have lived music not as a full-time professional, but as a dedicated performer. My journey through music — ranging from Spotify releases and YouTube videos to diverse band experiences and live performances — has profoundly shaped my understanding of musicians' physical and emotional landscapes.
