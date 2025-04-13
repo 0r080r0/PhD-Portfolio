@@ -19,14 +19,10 @@ science and motor rehabilitation research, I saw an opportunity to bridge my mus
 **Research Projects**
 1. Simulated EMG Data Analysis (R / Python)
 2. Multi-Level Modelling (R / Python)
-3. Prototype of a Drummer’s Posture Correction Web App
-4. A Musician's Health Questionnaire
+3. Website on Musicians' Health
+4. A Musicians' Health Questionnaire
+5. Prototype of a Drummers' Posture Correction Web Application
 
-**Supplementary Materials (Academic Coding & Skills)**
-* Statistical Analysis Examples 
-* Python & Data Science Notebooks
-* Machine Learning Demonstrations
-* Data Interface & API Projects
 
 **Research Vision**
 
