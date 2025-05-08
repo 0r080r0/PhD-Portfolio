@@ -29,6 +29,6 @@ science and motor rehabilitation research, I saw an opportunity to bridge my mus
 To develop evidence-based tools that protect musicians' health, drawing from personal experience and scientific precision.
 
 **Academic & Professional Journey**
-* B.Sc. in Psychology (Groningen, NL) - Thesis Topic: The role of mental toughness on the relationship between goal focus and peak performance.
-* M.Sc. Psychological Science (Gothenburg, SE) - Thesis Topic: A meta-analysis on the effects of music listening on motor function in neurodegenerative diseases.
+* B.Sc. in Psychology (Groningen, NL) - Thesis Topic (Survey & Experiment): "The role of mental toughness on the relationship between goal focus and peak performance."
+* M.Sc. Psychological Science (Gothenburg, SE) - Thesis Topic (Meta-Analysis & Novel Concept): "On the Stairway to Heaven or the Highway to Hell - The Effects of Music Listening on Motricity in Parkinson's Disease."
 * Comprehensive background in statistics and research, working as a Freelance Clinical Research Consultant and Research Analyst
