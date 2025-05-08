@@ -23,9 +23,7 @@ science and motor rehabilitation research, I saw an opportunity to bridge my mus
 4. A Musicians' Health Questionnaire
 5. Prototype of a Drummers' Posture Correction Web Application
 
-###################
 **Research Vision**
-###################
 
 To develop evidence-based tools that protect musicians' health, drawing from personal experience and scientific precision.
 
