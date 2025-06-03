@@ -2,23 +2,23 @@
 install.packages(c("interactions", "ggeffects", "cowplot", "readr", "lme4", "ggplot2", "dplyr", "performance", "effects", "broom.mixed", "knitr", "lmerTest"))
 
 ### Load required packages
-library(readr)       # For reading data
-library(lme4)        # For multilevel modeling
-library(ggplot2)     # For plotting
-library(dplyr)       # For data manipulation
-library(performance) # For checking model assumptions
-library(effects)     # For visualizing effects
-library(interactions)# For visualizing interactions
-library(ggeffects)   # For visualizing predicted effects
-library(cowplot)     # For combining plots
-library(broom.mixed) # For tidying model output
-library(knitr)       # For tables
-library(lmerTest)    # For p-values in mixed models
+library(readr)       # reading data
+library(lme4)        # multilevel modeling
+library(ggplot2)     # plotting
+library(dplyr)       # data manipulation
+library(performance) # checking model assumptions
+library(effects)     # visualising effects
+library(interactions)# visualising interactions
+library(ggeffects)   # visualising predicted effects
+library(cowplot)     # combining plots
+library(broom.mixed) # tidying model output
+library(knitr)       # tables
+library(lmerTest)    # p-values in mixed models
 
-### Set seed for reproducibility
+### Set a seed for reproducibility
 set.seed(123)
 
-### Read the CSV file
+### Read the CSV file and load data
 drummers_data <- read.csv("/Users/evangelia_karakoliou/Downloads/drummers_panic_attacks.csv")
 
 ### Data preparation
@@ -41,7 +41,7 @@ numeric_vars <- drummers_data %>%
 
 correlation_matrix <- cor(numeric_vars)
 
-# Create correlation heatmap and save to file
+# Create a correlation heatmap and save to file
 png("correlation_heatmap.png", width = 800, height = 700)
 correlation_heatmap <- function(cormat) {
   melted_corr <- reshape2::melt(cormat)
@@ -66,9 +66,9 @@ heatmap_plot <- correlation_heatmap(correlation_matrix)
 print(heatmap_plot)
 dev.off()
 
-### Create boxplots for key variables
+### Create boxplots for all key variables
 
-# 1. Panic attacks by experience level
+# Panic attacks by experience level
 plot1 <- ggplot(drummers_data, aes(x = Experience_Level, y = Panic_Attack_Frequency, fill = Experience_Level)) +
   geom_boxplot(outlier.shape = 1, outlier.colour = "darkgrey", width = 0.6) +
   stat_boxplot(geom = "errorbar", width = 0.3) +
@@ -80,7 +80,7 @@ plot1 <- ggplot(drummers_data, aes(x = Experience_Level, y = Panic_Attack_Freque
   theme(plot.title = element_text(size = 12),
         legend.position = "bottom")
 
-# 2. Panic attacks by performance anxiety level
+# Panic attacks by performance anxiety level
 plot2 <- ggplot(drummers_data, aes(x = Performance_Anxiety, y = Panic_Attack_Frequency, fill = Performance_Anxiety)) +
   geom_boxplot(outlier.shape = 1, outlier.colour = "darkgrey", width = 0.6) +
   stat_boxplot(geom = "errorbar", width = 0.3) +
@@ -98,7 +98,7 @@ combined_plots <- plot_grid(plot1, plot2, ncol = 2)
 print(combined_plots)
 dev.off()
 
-# 3. Relationship between practice hours and panic attacks
+# Relationship between practice hours and panic attacks
 practice_plot <- ggplot(drummers_data, aes(x = Weekly_Practice_Hours, y = Panic_Attack_Frequency, color = Experience_Level)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "lm", se = TRUE) +
@@ -113,23 +113,23 @@ png("practice_hours_plot.png", width = 800, height = 500)
 print(practice_plot)
 dev.off()
 
-# --------------------
+######################
 # Multi-level modeling
-# --------------------
+######################
 
-# Model 1: Basic random intercept model with Band_ID
+# Model 1: basic random intercept model with Band_ID
 model1 <- lmer(Panic_Score ~ Experience_Level + Performance_Anxiety + Weekly_Practice_Hours +
                  (1 | Band_ID),
                data = drummers_data,
-               REML = FALSE) # Use ML for AIC/BIC comparison
+               REML = FALSE) # use ML to compare AIC/BIC
 
-# Model 2: Crossed random effects with Band_ID and Genre_ID
+# Model 2: crossed random effects with Band_ID and Genre_ID
 model2 <- lmer(Panic_Score ~ Experience_Level + Performance_Anxiety + Weekly_Practice_Hours +
                  (1 | Band_ID) + (1 | Genre_ID),
                data = drummers_data,
                REML = FALSE)
 
-# Model 3: Full model with more predictors
+# Model 3: full model with additional predictors
 model3 <- lmer(Panic_Score ~ Experience_Level + Performance_Anxiety + Weekly_Practice_Hours +
                  Age + Sleep_Hours + Caffeine_Intake + Tour_Status + Performance_Venue_Size +
                  Medical_History + Therapy +
@@ -137,7 +137,7 @@ model3 <- lmer(Panic_Score ~ Experience_Level + Performance_Anxiety + Weekly_Pra
                data = drummers_data,
                REML = FALSE)
 
-# Model 4: Interaction model
+# Model 4: interaction model
 model4 <- lmer(Panic_Score ~ Experience_Level * Tour_Status + Performance_Anxiety +
                  Weekly_Practice_Hours + Age + Sleep_Hours +
                  (1 | Band_ID) + (1 | Genre_ID),
@@ -191,7 +191,7 @@ fixed_effects_plot <- ggplot(model3_summary,
 print(fixed_effects_plot)
 dev.off()
 
-# Visualize interaction from model4
+# Visualise the interaction from model4
 png("interaction_plot.png", width = 800, height = 500)
 interaction_plot <- interact_plot(model4,
                                   pred = Experience_Level,
@@ -204,7 +204,7 @@ interaction_plot <- interact_plot(model4,
 print(interaction_plot)
 dev.off()
 
-# Visualize predicted effects
+# Visualise predicted effects
 png("predicted_effects.png", width = 900, height = 700)
 predicted_effects <- ggpredict(model3, terms = c("Weekly_Practice_Hours", "Experience_Level"))
 predicted_plot <- plot(predicted_effects) +
@@ -215,9 +215,9 @@ predicted_plot <- plot(predicted_effects) +
 print(predicted_plot)
 dev.off()
 
-# -------------------------
-# Additional outcome models
-# -------------------------
+###################
+# Additional models
+###################
 
 # Model for panic attack frequency
 frequency_model <- lmer(Panic_Attack_Frequency ~ Experience_Level + Performance_Anxiety +
@@ -225,7 +225,7 @@ frequency_model <- lmer(Panic_Attack_Frequency ~ Experience_Level + Performance_
                           Caffeine_Intake + Sleep_Hours + Therapy +
                           (1 | Band_ID) + (1 | Genre_ID),
                         data = drummers_data,
-                        REML = TRUE) # Switch to REML for final model
+                        REML = TRUE) # switch to REML for the final model
 
 # Model for panic attack duration
 duration_model <- lmer(Duration_Minutes ~ Experience_Level + Performance_Anxiety +
@@ -255,7 +255,7 @@ png("model3_diagnostics.png", width = 800, height = 800)
 check_model(model3, panel = TRUE)
 dev.off()
 
-# Visualize key predicted relationships for frequency model
+# Visualise key predicted relationships for frequency model
 png("frequency_by_anxiety.png", width = 800, height = 500)
 predicted_freq <- ggpredict(frequency_model, terms = c("Weekly_Practice_Hours", "Performance_Anxiety"))
 freq_plot <- plot(predicted_freq) +
