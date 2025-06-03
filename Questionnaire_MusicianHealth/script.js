@@ -43,7 +43,7 @@ function startQuiz() {
 function showQuestions() {
     const currentGroup = questions[currentPage];
     const form = document.getElementById('health-form');
-    form.innerHTML = `<h2>${currentGroup.group}</h2>`; // Display the category heading only once for each section
+    form.innerHTML = `<h2>${currentGroup.group}</h2>`;
 
     currentGroup.questions.forEach((q, index) => {
         form.innerHTML += `
