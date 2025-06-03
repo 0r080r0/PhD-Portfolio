@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Start Page -->
+    <!-- start page for online questionnaire -->
     <div id="start-page" class="start-page">
         <div class="container">
             <h1>Musician's Health Questionnaire</h1>
@@ -17,11 +17,11 @@
         </div>
     </div>
 
-    <!-- Questionnaire Page -->
+    <!-- questionnaire page -->
     <div id="questionnaire" class="questionnaire" style="display: none;">
         <div class="container">
             <form id="health-form">
-                <!-- Questions will be dynamically inserted here -->
+                <!-- all questions will be dynamically inserted here -->
             </form>
             <div class="button-container">
                 <button id="prev-button" onclick="changeQuestion(-1)" style="display: none;">Previous</button>
@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    <!-- Tips Dashboard Page -->
+    <!-- dashboard page for advice -->
     <div id="tips-dashboard" class="tips-dashboard" style="display: none;">
         <div class="container">
             <h2>Your Curated Health Tips</h2>
@@ -47,12 +47,12 @@
             </div>
 
             <div id="tips-container">
-                <!-- Tips will be dynamically inserted here after category click -->
+                <!-- advice will be dynamically inserted here after clicking on a category -->
             </div>
         </div>
     </div>
 
-    <!-- Thank You Page -->
+    <!-- final thank you page -->
     <div id="end-page" class="end-page" style="display: none;">
         <div class="container">
             <h2>Thank You for Participating!</h2>
