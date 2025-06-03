@@ -17,36 +17,36 @@ library(viridis)
 library(patchwork)
 library(lme4)
 library(car)
-set.seed(8473) # For reproducible results
+set.seed(8473)
 
-# Simulation parameters
-sampling_rate <- 2000 # Hz (standard for high-quality EMG)
+# simulation parameters
+sampling_rate <- 2000 # measured in Hz -> standard for high-quality EMG
 duration <- if(rnorm(1) < 0) 5 else 5 # seconds per trial
-n_trials <- 20
-n_subjects <- 15
-drumming_patterns <- c("single_stroke", "double_stroke", "paradiddle")
-tempo <- c("slow", "medium", "fast")
+n_trials <- 20 # no. of trials
+n_subjects <- 15 # sample size
+drumming_patterns <- c("single_stroke", "double_stroke", "paradiddle") # strokes & rudiments
+tempo <- c("slow", "medium", "fast") # drumming tempo
 
-# Muscles monitored
+# muscles monitored that are relevant to drummers
 muscles <- c(
-  "biceps_brachii", # Primary elbow flexor
-  "triceps_brachii", # Primary elbow extensor
-  "deltoid_anterior", # Shoulder flexion/abduction
-  "deltoid_posterior", # Shoulder extension/abduction
-  "flexor_carpi_radialis", # Wrist flexion
-  "extensor_carpi_radialis", # Wrist extension
-  "flexor_digitorum_superficialis", # Finger flexion
-  "erector_spinae", # Spinal extension
-  "latissimus_dorsi", # Torso stability
-  "rectus_abdominis" # Core stabilization
+  "biceps_brachii", # primary elbow flexor
+  "triceps_brachii", # primary elbow extensor
+  "deltoid_anterior", # shoulder flexion/abduction
+  "deltoid_posterior", # shoulder extension/abduction
+  "flexor_carpi_radialis", # wrist flexion
+  "extensor_carpi_radialis", # wrist extension
+  "flexor_digitorum_superficialis", # finger flexion
+  "erector_spinae", # spinal extension
+  "latissimus_dorsi", # torso stability
+  "rectus_abdominis" # core stabilization
 )
 
-# Function to simulate realistic EMG signal
+# function to simulate a realistic EMG signal
 generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
-  # Number of samples
+  # no. of samples
   n_samples <- duration * fs
   
-  # Base parameters that vary by muscle, pattern and tempo
+  # base parameters that vary by muscle, pattern and tempo
   if(temp == "slow") {
     stroke_freq <- 2 # Hz
     intensity_factor <- 0.7
@@ -58,7 +58,8 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     intensity_factor <- 1.3
   }
   
-  # Muscle-specific parameters (realistic MVC percentages during drumming)
+  # muscle-specific parameters - realistic MVC percentages during drumming
+  # MVC = maximal voluntary contraction under a concentric contraction
   muscle_params <- list(
     biceps_brachii = list(mean_amplitude = 0.4, noise_level = 0.05, fatigue_rate = 0.02),
     triceps_brachii = list(mean_amplitude = 0.6, noise_level = 0.06, fatigue_rate = 0.03),
@@ -72,7 +73,7 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     rectus_abdominis = list(mean_amplitude = 0.25, noise_level = 0.03, fatigue_rate = 0.01)
   )
   
-  # Pattern-specific adjustments (modulation of muscles based on technique)
+  # pattern-specific adjustments - modulation of muscles based on drumming technique
   pattern_factor <- switch(pattern,
                            "single_stroke" = ifelse(muscle %in% c("flexor_carpi_radialis", "extensor_carpi_radialis", 
                                                                   "flexor_digitorum_superficialis"), 1.2, 0.9),
@@ -82,13 +83,13 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
                                                  1.1, ifelse(muscle %in% c("erector_spinae", "rectus_abdominis"), 1.2, 0.95))
   )
   
-  # Combine factors
+  # combine the factors
   base_amplitude <- muscle_params[[muscle]]$mean_amplitude * intensity_factor * pattern_factor
   
-  # Generate time vector
+  # generate a time vector
   t <- seq(0, duration, 1/fs)
   
-  # Generate EMG baseline (colored noise to simulate biological signal)
+  # generate the EMG baseline - colored noise to simulate biological signal
   noise <- rnorm(n_samples, 0, muscle_params[[muscle]]$noise_level)
   for(i in 2:length(noise)) {
     noise[i] <- 0.95 * noise[i-1] + noise[i] # AR(1) process for colored noise
