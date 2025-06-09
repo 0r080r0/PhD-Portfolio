@@ -5,7 +5,7 @@
 install.packages(c("ggplot2", "dplyr", "tidyr", "signal", "pracma", "wavelets", "ggridges", "viridis", "patchwork", "lme4", "car"))
 
 # load libraries
-# lapply(c("ggplot2", "dplyr", "tidyr", "signal", "pracma", "wavelets", "ggridges", "viridis", "patchwork", "lme4", "car"), library, character.only = TRUE)
+# efficient loading: lapply(c("ggplot2", "dplyr", "tidyr", "signal", "pracma", "wavelets", "ggridges", "viridis", "patchwork", "lme4", "car"), library, character.only = TRUE)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -46,7 +46,7 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
   # no. of samples
   n_samples <- duration * fs
   
-  # base parameters that vary by muscle, pattern and tempo
+  # base parameters which vary by muscle, pattern and tempo
   if(temp == "slow") {
     stroke_freq <- 2 # Hz
     intensity_factor <- 0.7
@@ -58,7 +58,7 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     intensity_factor <- 1.3
   }
   
-  # muscle-specific parameters - realistic MVC percentages during drumming
+  # muscle-specific parameters for realistic MVC % during drumming
   # MVC = maximal voluntary contraction under a concentric contraction
   muscle_params <- list(
     biceps_brachii = list(mean_amplitude = 0.4, noise_level = 0.05, fatigue_rate = 0.02),
@@ -73,7 +73,7 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     rectus_abdominis = list(mean_amplitude = 0.25, noise_level = 0.03, fatigue_rate = 0.01)
   )
   
-  # pattern-specific adjustments - modulation of muscles based on drumming technique
+  # pattern-specific adjustments (modulation of muscles based on drumming technique)
   pattern_factor <- switch(pattern,
                            "single_stroke" = ifelse(muscle %in% c("flexor_carpi_radialis", "extensor_carpi_radialis", 
                                                                   "flexor_digitorum_superficialis"), 1.2, 0.9),
@@ -83,24 +83,24 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
                                                  1.1, ifelse(muscle %in% c("erector_spinae", "rectus_abdominis"), 1.2, 0.95))
   )
   
-  # combine the factors
+  # combine all factors
   base_amplitude <- muscle_params[[muscle]]$mean_amplitude * intensity_factor * pattern_factor
   
   # generate a time vector
   t <- seq(0, duration, 1/fs)
   
-  # generate the EMG baseline - colored noise to simulate biological signal
+  # generate the EMG baseline - coloured noise to simulate biological signal
   noise <- rnorm(n_samples, 0, muscle_params[[muscle]]$noise_level)
   for(i in 2:length(noise)) {
-    noise[i] <- 0.95 * noise[i-1] + noise[i] # AR(1) process for colored noise
+    noise[i] <- 0.95 * noise[i-1] + noise[i] # AR(1) process for coloured noise
   }
   
-  # Generate stroke events
+  # generate stroke events
   if(pattern == "single_stroke") {
-    # Regular, evenly spaced strokes
+    # regular, evenly spaced strokes
     stroke_times <- seq(0, duration, 1/stroke_freq)
   } else if(pattern == "double_stroke") {
-    # Paired strokes with spacing
+    # paired strokes with spacing
     pairs <- seq(0, duration, 2/stroke_freq)
     stroke_times <- c()
     for(p in pairs) {
@@ -108,7 +108,7 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     }
     stroke_times <- stroke_times[stroke_times <= duration]
   } else { # paradiddle (RLRR LRLL pattern)
-    base_times <- seq(0, duration, 4/stroke_freq) # Each paradiddle takes 4 beats
+    base_times <- seq(0, duration, 4/stroke_freq) # each paradiddle takes 4 beats
     stroke_times <- c()
     for(p in base_times) {
       # RLRR pattern with timing adjustments
@@ -122,16 +122,16 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     }
   }
   
-  # Generate impulse response template for EMG burst (using Gaussian function)
+  # generate impulse response template for EMG burst (using Gaussian function)
   impulse_len <- 0.1 * fs # 100ms impulse response
   impulse_t <- seq(0, 0.1, 1/fs)
   impulse_response <- exp(-(impulse_t - 0.02)^2 / 0.001) # Gaussian centered at 20ms
-  impulse_response <- impulse_response / max(impulse_response) # Normalize
+  impulse_response <- impulse_response / max(impulse_response) # normalise
   
-  # Initialize EMG signal with noise
+  # initialise EMG signal with noise
   emg <- noise
   
-  # Add EMG bursts at stroke times
+  # add EMG bursts at stroke times
   for(st in stroke_times) {
     start_idx <- max(1, round(st * fs))
     end_idx <- min(n_samples, start_idx + impulse_len - 1)
@@ -142,19 +142,19 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     }
   }
   
-  # Add fatigue effect (decreasing amplitude over time)
+  # add fatigue effect (decreasing amplitude over time)
   fatigue_factor <- 1 - muscle_params[[muscle]]$fatigue_rate * cumsum(rep(1/fs, n_samples))
-  fatigue_factor[fatigue_factor < 0.6] <- 0.6 # Limit fatigue effect
+  fatigue_factor[fatigue_factor < 0.6] <- 0.6 # limit fatigue effect
   
   emg <- emg * fatigue_factor
   
-  # Add some low-frequency drift
+  # add some low-frequency drift
   drift <- sin(2 * pi * 0.1 * t) * 0.05 * base_amplitude
   
-  # Add simulated power line noise (50 Hz)
+  # add simulated power line noise (50 Hz)
   line_noise <- sin(2 * pi * 50 * t) * 0.08 * base_amplitude
   
-  # Add simulated ECG artifact (primarily affecting torso muscles)
+  # add simulated ECG artifact (primarily affecting torso muscles)
   ecg_artifact <- rep(0, n_samples)
   if(muscle %in% c("erector_spinae", "latissimus_dorsi", "rectus_abdominis")) {
     heart_rate <- 70/60 # beats per second (70 BPM)
@@ -162,7 +162,7 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     for(et in ecg_times) {
       et_idx <- round(et * fs)
       if(et_idx > 0 && et_idx < n_samples - 100) {
-        # Simplified ECG waveform (QRS complex)
+        # simplified ECG waveform (QRS complex)
         qrs_len <- 0.1 * fs # 100ms
         qrs_t <- seq(0, 0.1, 1/fs)
         qrs_wave <- 0.5 * base_amplitude * c(
@@ -178,15 +178,15 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     }
   }
   
-  # Occasional motion artifacts
+  # occasional motion artifacts
   motion_artifact <- rep(0, n_samples)
   if(runif(1) < 0.3) { # 30% chance of motion artifact
-    artifact_start <- sample(1:(n_samples - 0.5*fs), 1) # Random starting point
+    artifact_start <- sample(1:(n_samples - 0.5*fs), 1) # random starting point
     artifact_duration <- round(runif(1, 0.1, 0.3) * fs) # 100-300ms
     artifact_end <- min(n_samples, artifact_start + artifact_duration)
-    artifact_amp <- runif(1, 1.5, 3) * base_amplitude # Large spike
+    artifact_amp <- runif(1, 1.5, 3) * base_amplitude # large spike
     
-    # Create motion artifact shape (sudden spike and return)
+    # create motion artifact shape (sudden spike and return)
     motion_shape <- c(
       seq(0, artifact_amp, length.out = round(artifact_duration/4)),
       seq(artifact_amp, -artifact_amp/2, length.out = round(artifact_duration/2)),
@@ -200,20 +200,20 @@ generate_emg_signal <- function(duration, fs, muscle, pattern, temp) {
     motion_artifact[artifact_start:artifact_end] <- motion_shape
   }
   
-  # Final EMG signal with all components
+  # final EMG signal with all components
   emg <- emg + drift + line_noise + ecg_artifact + motion_artifact
-  emg <- abs(emg) # Taking absolute value to simulate rectified EMG
+  emg <- abs(emg) # taking absolute value to simulate rectified EMG
   
   return(emg)
 }
 
-# Generate complete dataset
+# generate complete dataset
 cat("Generating simulated EMG data...\n")
 emg_data <- list()
-for(subj in 1:3) { # Reducing to 3 subjects for demonstration
+for(subj in 1:3) { # reducing to 3 subjects for demonstration
   for(pat in drumming_patterns) {
     for(tmp in tempo) {
-      for(trial in 1:3) { # Reducing to 3 trials for demonstration
+      for(trial in 1:3) { # reducing to 3 trials for demonstration
         trial_data <- data.frame(
           time = seq(0, duration, 1/sampling_rate),
           subject = subj,
@@ -222,7 +222,7 @@ for(subj in 1:3) { # Reducing to 3 subjects for demonstration
           trial = trial
         )
         
-        # Generate EMG for each muscle
+        # generate EMG for each muscle
         for(mus in muscles) {
           trial_data[[mus]] <- generate_emg_signal(duration, sampling_rate, mus, pat, tmp)
         }
@@ -233,44 +233,44 @@ for(subj in 1:3) { # Reducing to 3 subjects for demonstration
   }
 }
 
-# Combine all trials into one dataframe
+# combine all trials into one dataframe
 all_data <- bind_rows(emg_data)
 cat("Data generation complete.\n")
 
-# ---- Signal Processing ----
-# Function for EMG preprocessing with artifacts saved for visualization
+##### Signal Processing ####
+# function for EMG preprocessing with artifacts saved for visualisation
 preprocess_emg <- function(signal, fs) {
-  # Store original signal
+  # store original signal
   original <- signal
   
-  # Butterworth bandpass filter (20-450 Hz, standard for surface EMG)
+  # Butterworth bandpass filter (20-450 Hz - standard for surface EMG)
   bf <- butter(4, c(20, 450)/(fs/2), "pass")
   filtered <- filtfilt(bf$b, bf$a, signal)
   after_bandpass <- filtered
   
-  # Notch filter for power line interference (50 Hz for Europe)
+  # notch filter for power line interference (50 Hz)
   notch <- butter(2, c(49, 51)/(fs/2), "stop")
   filtered <- filtfilt(notch$b, notch$a, filtered)
   after_notch <- filtered
   
-  # Full-wave rectification
+  # full-wave rectification
   rectified <- abs(filtered)
   
-  # Smoothing (moving average, 100ms window)
+  # smoothing (moving average - 100ms window)
   window_size <- round(0.1 * fs)
   smoothed <- pracma::movavg(rectified, window_size, type="s")
   
-  # Detect outliers (potential motion artifacts)
+  # detect outliers (potential motion artifacts)
   mean_signal <- mean(smoothed)
   sd_signal <- sd(smoothed)
   threshold <- mean_signal + 3 * sd_signal
   
-  # Identify artifacts
+  # identify artifacts
   artifact_indices <- which(smoothed > threshold)
   
-  # Remove/replace artifacts with interpolation if they exist
+  # remove/replace artifacts with interpolation if they exist
   if(length(artifact_indices) > 0) {
-    # Group consecutive indices
+    # group consecutive indices
     breaks <- which(diff(artifact_indices) > 1)
     groups <- c(0, breaks, length(artifact_indices))
     
@@ -278,12 +278,12 @@ preprocess_emg <- function(signal, fs) {
       start_idx <- artifact_indices[groups[i] + 1]
       end_idx <- artifact_indices[groups[i+1]]
       
-      # Get values before and after artifact
+      # get values before and after artifact
       if(start_idx > 1 && end_idx < length(smoothed)) {
         before_val <- smoothed[start_idx - 1]
         after_val <- smoothed[end_idx + 1]
         
-        # Linear interpolation
+        # linear interpolation
         smoothed[start_idx:end_idx] <- seq(
           before_val, after_val, length.out = end_idx - start_idx + 1
         )
@@ -304,15 +304,15 @@ preprocess_emg <- function(signal, fs) {
   ))
 }
 
-# Process each muscle signal - store intermediate results for visualization
+# process each muscle signal - store intermediate results for visualisation
 cat("Processing EMG signals...\n")
-# Create a dataframe to store one example of each stage for visualization
+# create dataframe to store one example of each stage for visualisation
 viz_data <- all_data %>% 
   filter(subject == 1, pattern == "paradiddle", tempo == "fast", trial == 1) %>%
   select(time, flexor_carpi_radialis, extensor_carpi_radialis, biceps_brachii, erector_spinae)
 
-# ---- Signal Processing and Artifact Removal Visualization ----
-# Process a single example for visualization 
+#### Signal Processing and Artifact Removal Visualisation ###
+# process a single example for visualisation 
 cat("Generating processing visualization...\n")
 viz_muscle <- "flexor_carpi_radialis"
 viz_subject <- 1
@@ -320,16 +320,16 @@ viz_pattern <- "paradiddle"
 viz_tempo <- "fast"
 viz_trial <- 1
 
-# Extract data for visualization
+# extract data for visualisation
 viz_data <- all_data %>% 
   filter(subject == viz_subject, pattern == viz_pattern, tempo == viz_tempo, trial == viz_trial)
 viz_signal <- viz_data[[viz_muscle]]
 viz_time <- viz_data$time
 
-# Apply processing steps with visualization
+# apply processing steps with visualisation
 viz_processing <- preprocess_emg(viz_signal, sampling_rate)
 
-# Create visualization dataframe
+# create visualisation dataframe
 viz_df <- data.frame(
   time = viz_time,
   original = viz_processing$original,
@@ -340,7 +340,7 @@ viz_df <- data.frame(
   artifact_removed = viz_processing$after_artifact_removal
 )
 
-# Plot EMG signal processing stages
+# plot EMG signal processing stages
 processing_plot <- viz_df %>%
   pivot_longer(cols = -time, names_to = "stage", values_to = "amplitude") %>%
   mutate(stage = factor(stage, levels = c("original", "after_bandpass", "after_notch", 
@@ -354,7 +354,7 @@ processing_plot <- viz_df %>%
   theme_minimal() +
   theme(strip.text = element_text(face = "bold"))
 
-# Highlight artifacts on original signal
+# highlight artifacts on original signal
 artifact_plot <- ggplot(viz_df, aes(x = time)) +
   geom_line(aes(y = original), color = "black") +
   geom_point(data = viz_df[viz_processing$artifact_indices, ], 
@@ -366,23 +366,23 @@ artifact_plot <- ggplot(viz_df, aes(x = time)) +
   theme_minimal() +
   theme(legend.position = "bottom")
 
-# Save plots
+# save plots
 pdf("emg_processing_visualization.pdf", width = 10, height = 12)
 print(processing_plot)
 print(artifact_plot)
 dev.off()
 
-# ---- Multi-muscle EMG Visualization ----
-# Compare multiple muscles during different drumming patterns
+### Multi-muscle EMG Visualization ###
+# compare multiple muscles during different drumming patterns
 key_muscles <- c("flexor_carpi_radialis", "extensor_carpi_radialis", 
                  "biceps_brachii", "triceps_brachii", "erector_spinae")
 
-# Create processed data for key muscles
+# create processed data for key muscles
 multi_muscle_df <- all_data %>% 
   filter(subject == 1, trial == 1, tempo == "medium") %>%
   select(time, pattern, all_of(key_muscles))
 
-# Apply processing to each muscle
+# apply processing to each muscle
 for(mus in key_muscles) {
   for(pat in unique(multi_muscle_df$pattern)) {
     idx <- which(multi_muscle_df$pattern == pat)
@@ -391,7 +391,7 @@ for(mus in key_muscles) {
   }
 }
 
-# Create long format for plotting
+# create long format for plotting
 multi_muscle_long <- multi_muscle_df %>%
   select(time, pattern, contains("_processed")) %>%
   pivot_longer(cols = contains("_processed"), 
@@ -399,7 +399,7 @@ multi_muscle_long <- multi_muscle_df %>%
                values_to = "amplitude") %>%
   mutate(muscle = gsub("_processed", "", muscle))
 
-# Plot multiple muscles across different patterns
+# plot multiple muscles across different patterns
 multi_muscle_plot <- ggplot(multi_muscle_long, aes(x = time, y = amplitude, color = muscle)) +
   geom_line(alpha = 0.7) +
   facet_wrap(~pattern, ncol = 1) +
@@ -410,25 +410,25 @@ multi_muscle_plot <- ggplot(multi_muscle_long, aes(x = time, y = amplitude, colo
   theme_minimal() +
   theme(legend.position = "bottom")
 
-# Save plot
+# save plot
 pdf("multi_muscle_comparison.pdf", width = 10, height = 12)
 print(multi_muscle_plot)
 dev.off()
 
-# ---- Tempo Effect Visualization ----
-# Create data for tempo comparison
+### Tempo Effect Visualisation ###
+# create data for tempo comparison
 tempo_comparison <- all_data %>%
   filter(subject == 1, pattern == "single_stroke", trial == 1) %>%
   select(time, tempo, extensor_carpi_radialis)
 
-# Process signals
+# process signals
 for(tmp in unique(tempo_comparison$tempo)) {
   idx <- which(tempo_comparison$tempo == tmp)
   sig <- tempo_comparison$extensor_carpi_radialis[idx]
   tempo_comparison$processed[idx] <- preprocess_emg(sig, sampling_rate)$smoothed
 }
 
-# Plot tempo effect
+# plot tempo effect
 tempo_plot <- ggplot(tempo_comparison, aes(x = time, y = processed, color = tempo)) +
   geom_line() +
   scale_color_manual(values = c("slow" = "blue", "medium" = "purple", "fast" = "red")) +
@@ -437,18 +437,18 @@ tempo_plot <- ggplot(tempo_comparison, aes(x = time, y = processed, color = temp
        x = "Time (s)", y = "Amplitude (mV)") +
   theme_minimal()
 
-# Save plot
+# save plot
 pdf("tempo_effect.pdf", width = 10, height = 6)
 print(tempo_plot)
 dev.off()
 
-# ---- Spectral Analysis ----
-# Function for spectral analysis
+### Spectral Analysis ###
+# function for spectral analysis
 analyze_spectrum <- function(signal, fs) {
-  # Calculate power spectral density
+  # calculate power spectral density
   spec <- spectrum(signal, plot = FALSE)
   
-  # Create dataframe for plotting
+  # create dataframe for plotting
   spec_df <- data.frame(
     frequency = spec$freq * fs,
     power = spec$spec
@@ -457,24 +457,24 @@ analyze_spectrum <- function(signal, fs) {
   return(spec_df)
 }
 
-# Analyze one sample from each drumming pattern
+# analyse one sample from each drumming pattern
 spec_analysis <- data.frame()
 for(pat in drumming_patterns) {
   sample_data <- all_data %>%
     filter(subject == 1, pattern == pat, tempo == "medium", trial == 1)
   
-  # Process flexor carpi radialis
+  # process flexor carpi radialis
   signal <- sample_data$flexor_carpi_radialis
   processed <- preprocess_emg(signal, sampling_rate)$after_notch
   
-  # Get spectrum
+  # get spectrum
   spec_df <- analyze_spectrum(processed, sampling_rate)
   spec_df$pattern <- pat
   
   spec_analysis <- rbind(spec_analysis, spec_df)
 }
 
-# Plot spectral comparison
+# plot spectral comparison
 spectrum_plot <- ggplot(spec_analysis, aes(x = frequency, y = power, color = pattern)) +
   geom_line(alpha = 0.7) +
   scale_x_continuous(limits = c(0, 500)) +
@@ -483,13 +483,13 @@ spectrum_plot <- ggplot(spec_analysis, aes(x = frequency, y = power, color = pat
        x = "Frequency (Hz)", y = "Power") +
   theme_minimal()
 
-# Save plot
+# save plot
 pdf("spectral_analysis.pdf", width = 10, height = 6)
 print(spectrum_plot)
 dev.off()
 
-# ---- Feature Extraction and Statistical Analysis ----
-# Function to extract features from a processed EMG signal
+### Feature Extraction and Statistical Analysis ###
+# function to extract features from a processed EMG signal
 extract_features <- function(signal) {
   # Mean Absolute Value
   mav <- mean(abs(signal))
@@ -497,38 +497,38 @@ extract_features <- function(signal) {
   # Root Mean Square
   rms <- sqrt(mean(signal^2))
   
-  # Integrated EMG
+  # integrated EMG
   iemg <- sum(abs(signal))
   
-  # Waveform Length
+  # waveform Length
   wl <- sum(abs(diff(signal)))
   
-  # Variance
+  # variance
   var_emg <- var(signal)
   
   return(c(MAV = mav, RMS = rms, IEMG = iemg, WL = wl, VAR = var_emg))
 }
 
-# Extract features for all conditions
+# extract features for all conditions
 feature_results <- data.frame()
 for(subj in unique(all_data$subject)) {
   for(pat in drumming_patterns) {
     for(tmp in tempo) {
       for(trl in unique(all_data$trial)) {
-        # Get segment data
+        # get segment data
         seg_data <- all_data %>% 
           filter(subject == subj, pattern == pat, tempo == tmp, trial == trl)
         
         if(nrow(seg_data) > 0) {
           for(mus in key_muscles) {
-            # Process signal
+            # process signal
             signal <- seg_data[[mus]]
             processed <- preprocess_emg(signal, sampling_rate)$smoothed
             
-            # Extract features
+            # extract features
             features <- extract_features(processed)
             
-            # Create result row
+            # create result row
             result_row <- data.frame(
               subject = subj,
               pattern = pat,
@@ -546,7 +546,7 @@ for(subj in unique(all_data$subject)) {
   }
 }
 
-# Calculate summary statistics
+# calculate summary statistics
 feature_summary <- feature_results %>%
   group_by(pattern, tempo, muscle) %>%
   summarize(
@@ -559,7 +559,7 @@ feature_summary <- feature_results %>%
     .groups = "drop"
   )
 
-# Plot mean RMS by muscle, pattern and tempo
+# plot mean RMS by muscle, pattern and tempo
 rms_plot <- ggplot(feature_results, aes(x = muscle, y = RMS, fill = pattern)) +
   geom_boxplot() +
   facet_wrap(~tempo) +
@@ -569,24 +569,24 @@ rms_plot <- ggplot(feature_results, aes(x = muscle, y = RMS, fill = pattern)) +
   labs(title = "Root Mean Square (RMS) Values by Muscle, Pattern and Tempo",
        x = "Muscle", y = "RMS Value")
 
-# Save plot
+# save plot
 pdf("feature_analysis.pdf", width = 12, height = 8)
 print(rms_plot)
 dev.off()
 
-# ---- Time-Frequency Analysis (wavelet transform) ----
-# Wavelet analysis on one example signal
+### Time-Frequency Analysis (wavelet transform) ###
+# wavelet analysis on one example signal
 wavelet_signal <- all_data %>%
   filter(subject == 1, pattern = "paradiddle", tempo == "fast", trial == 1) %>%
   pull(flexor_carpi_radialis)
 
 processed_signal <- preprocess_emg(wavelet_signal, sampling_rate)$after_notch
 
-# Apply continuous wavelet transform
+# apply continuous wavelet transform
 wavelet_result <- cwt(processed_signal, dj = 1/12, n.scale = 50, 
                       powerscales = TRUE, mother = "morlet", param = 6)
 
-# Create time-frequency heatmap
+# create time-frequency heatmap
 time_freq_df <- expand.grid(
   time = seq(0, duration, length.out = length(processed_signal)),
   scale = wavelet_result$scale
@@ -594,13 +594,13 @@ time_freq_df <- expand.grid(
 time_freq_df$power <- as.vector(abs(wavelet_result$wave)^2)
 time_freq_df$period <- wavelet_result$period
 
-# Convert scale to pseudo-frequency
+# convert scale to pseudo-frequency
 time_freq_df$frequency <- sampling_rate / time_freq_df$period
 
-# Filter to relevant frequency range
+# filter to relevant frequency range
 time_freq_df <- time_freq_df %>% filter(frequency <= 500 & frequency >= 10)
 
-# Plot time-frequency analysis
+# plot time-frequency analysis
 wavelet_plot <- ggplot(time_freq_df, aes(x = time, y = frequency, fill = power)) +
   geom_raster(interpolate = TRUE) +
   scale_fill_viridis_c(option = "magma") +
@@ -610,35 +610,35 @@ wavelet_plot <- ggplot(time_freq_df, aes(x = time, y = frequency, fill = power))
        x = "Time (s)", y = "Frequency (Hz)") +
   theme_minimal()
 
-# Save plot
+# save plot
 pdf("wavelet_analysis.pdf", width = 10, height = 8)
 print(wavelet_plot)
 dev.off()
 
-# ---- Muscle Co-Activation Analysis ----
-# Calculate co-activation indices between antagonist pairs
+### Muscle Co-Activation Analysis ###
+# calculate co-activation indices between antagonist pairs
 co_activation <- data.frame()
 for(subj in unique(all_data$subject)) {
   for(pat in drumming_patterns) {
     for(tmp in tempo) {
       for(trl in unique(all_data$trial)) {
-        # Get segment data
+        # get segment data
         seg_data <- all_data %>% 
           filter(subject == subj, pattern == pat, tempo == tmp, trial == trl)
         
         if(nrow(seg_data) > 0) {
-          # Process antagonist pair signals
+          # process antagonist pair signals
           biceps <- preprocess_emg(seg_data$biceps_brachii, sampling_rate)$smoothed
           triceps <- preprocess_emg(seg_data$triceps_brachii, sampling_rate)$smoothed
           
           flexor <- preprocess_emg(seg_data$flexor_carpi_radialis, sampling_rate)$smoothed
           extensor <- preprocess_emg(seg_data$extensor_carpi_radialis, sampling_rate)$smoothed
           
-          # Calculate co-activation index (minimum of each pair divided by maximum)
+          # calculate co-activation index (minimum of each pair divided by maximum)
           arm_coact <- mean(pmin(biceps, triceps) / pmax(biceps, triceps), na.rm = TRUE)
           wrist_coact <- mean(pmin(flexor, extensor) / pmax(flexor, extensor), na.rm = TRUE)
           
-          # Create result row
+          # create result row
           result_row <- data.frame(
             subject = subj,
             pattern = pat,
@@ -655,7 +655,7 @@ for(subj in unique(all_data$subject)) {
   }
 }
 
-# Plot co-activation by pattern and tempo
+# plot co-activation by pattern and tempo
 coact_plot <- co_activation %>%
   pivot_longer(cols = c(arm_coactivation, wrist_coactivation),
                names_to = "muscle_group", values_to = "coactivation") %>%
@@ -667,12 +667,12 @@ coact_plot <- co_activation %>%
        x = "Drumming Pattern", y = "Co-Activation Index") +
   theme_minimal()
 
-# Save plot
+# save plot
 pdf("coactivation_analysis.pdf", width = 10, height = 6)
 print(coact_plot)
 dev.off()
 
-# ---- Summary Report Generation ----
+### Summary Report Generation ###
 # Print summary statistics to console
 cat("\n---- EMG Analysis Summary ----\n")
 cat("Number of subjects analyzed:", length(unique(all_data$subject)), "\n")
