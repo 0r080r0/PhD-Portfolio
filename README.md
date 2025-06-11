@@ -20,7 +20,7 @@ science and motor rehabilitation research, I saw an opportunity to bridge my mus
 2. Multi-Level Modelling (R / Python)
 3. Website on Musicians' Health (built with R / Quarto)
 4. A Musicians' Health Questionnaire
-5. Prototype of a Drummers' Posture Correction Web Application (with ongoing refinements)
+5. Prototype of a Drummers' Posture Correction Web Application (ongoing)
 
 **Research Vision**
 
