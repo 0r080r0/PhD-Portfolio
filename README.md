@@ -1,6 +1,6 @@
 # PhD-Portfolio
 
-Personal Website - Music Journey: https://evangelia-music.netlify.app/
+Link to my Personal Website about my Music and Research Journey: https://evangelia-music.netlify.app/
 
 ### The Origin: *From Musical Passion to Scientific Insight*
 
