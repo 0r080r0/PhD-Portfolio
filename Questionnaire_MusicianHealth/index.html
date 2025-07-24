@@ -8,15 +8,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- start page for online questionnaire -->
-    <div id="start-page" class="start-page">
+    <!-- Login/Register Page -->
+    <div id="auth-page" class="auth-page">
         <div class="container">
             <h1>Musician's Health Questionnaire</h1>
-            <p class="intro">Click "Start" to answer a few questions about your physical and mental health to receive curated tips for improvement.</p>
-            <button id="start-button" onclick="startQuiz()">Start</button>
+            <p class="intro">Please login or create an account to track your health journey over time.</p>
+            
+            <div class="auth-form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button id="auth-submit" class="full-width" onclick="handleAuth()">Login</button>
+                <p style="text-align: center; margin-top: 15px;">
+                    <span id="auth-toggle-text">Don't have an account?</span>
+                    <span class="auth-toggle" onclick="toggleAuthMode()">Register here</span>
+                </p>
+            </div>
+            <div id="auth-message"></div>
         </div>
     </div>
 
+    <!-- start page for online questionnaire -->
+    <div id="start-page" class="start-page" style="display: none;">
+        <div class="container">
+            <h1>Welcome back, <span id="user-name"></span>!</h1>
+            <p class="intro">Click "Start" to answer questions about your physical and mental health to receive curated tips for improvement.</p>
+            <button id="start-button" onclick="startQuiz()">Start New Survey</button>
+            <button onclick="showDashboard()" style="margin-top: 10px;">View Dashboard</button>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+    </div>
     <!-- questionnaire page -->
     <div id="questionnaire" class="questionnaire" style="display: none;">
         <div class="container">
@@ -29,7 +55,6 @@
             </div>
         </div>
     </div>
-
     <!-- dashboard page for advice -->
     <div id="tips-dashboard" class="tips-dashboard" style="display: none;">
         <div class="container">
@@ -45,21 +70,63 @@
                     <h3>Overall Well-being</h3>
                 </div>
             </div>
-
             <div id="tips-container">
                 <!-- advice will be dynamically inserted here after clicking on a category -->
             </div>
+            <button onclick="backToStart()" style="margin-top: 20px; width: 100%;">Back to Home</button>
         </div>
     </div>
+    <!-- Dashboard Page -->
+    <div id="dashboard-page" class="dashboard-page" style="display: none;">
+        <div class="container dashboard-container">
+            <h2>Your Health Dashboard</h2>
+            
+            <!-- Score Overview -->
+            <div class="score-overview">
+                <div class="score-card">
+                    <h3>Physical Health</h3>
+                    <div class="score-display" id="physical-score">-</div>
+                    <div class="score-trend" id="physical-trend"></div>
+                </div>
+                <div class="score-card">
+                    <h3>Mental Health</h3>
+                    <div class="score-display" id="mental-score">-</div>
+                    <div class="score-trend" id="mental-trend"></div>
+                </div>
+                <div class="score-card">
+                    <h3>Overall Well-being</h3>
+                    <div class="score-display" id="wellbeing-score">-</div>
+                    <div class="score-trend" id="wellbeing-trend"></div>
+                </div>
+            </div>
 
-    <!-- final thank you page -->
-    <div id="end-page" class="end-page" style="display: none;">
+            <!-- Progress Chart -->
+            <div class="chart-container">
+                <h3>Progress Over Time</h3>
+                <canvas id="progressChart" width="600" height="300"></canvas>
+            </div>
+
+            <!-- Recent History -->
+            <div class="history-section">
+                <h3>Recent Survey History</h3>
+                <div id="history-container">
+                    <!-- History will be loaded here -->
+                </div>
+            </div>
+            
+            <button onclick="backToStart()" style="margin-top: 20px; width: 100%;">Back to Home</button>
+        </div>
+    </div>
+    <!-- Thank You Page -->
+    <div id="thank-you-page" class="thank-you-page" style="display: none;">
         <div class="container">
             <h2>Thank You for Participating!</h2>
-            <p>Your answers have been recorded. We hope the tips you received help you maintain good health and well-being.</p>
+            <p>Your responses have been saved securely and anonymously to help track your health journey over time.</p>
+            <p>Check out your personalised tips below, and visit your dashboard anytime to see your progress.</p>
+            <button onclick="showTipsPage()" style="margin-top: 20px; width: 100%;">View Your Tips</button>
         </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
