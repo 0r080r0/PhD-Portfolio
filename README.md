@@ -23,6 +23,7 @@ science and motor rehabilitation research, I saw an opportunity to bridge my mus
 3. Website on Music Experience & Research Aspirations in Musicians' Health (built with R / Quarto)
 4. A Musicians' Health Questionnaire
 5. Prototype of a Drummers' Posture Correction Web Application (ongoing)
+6. Future project: ML-Based Injury Risk and Pain Prediction 
 
 **Research Vision**
 
